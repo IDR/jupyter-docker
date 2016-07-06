@@ -27,4 +27,9 @@ RUN mkdir -p -m 700 $HOME/.jupyter/ && \
 
 RUN mkdir -p /home/omero/.local/share/jupyter/kernels/python2/
 COPY kernel.json /home/omero/.local/share/jupyter/kernels/python2/kernel.json
+
+# RISE
+RUN git clone https://github.com/damianavila/RISE /tmp/RISE && \
+    cd /tmp/RISE && /home/omero/omeroenv/bin/python setup.py install
+
 CMD ["env", "PYTHONPATH=/home/omero/OMERO-CURRENT/lib/python", "/home/omero/omeroenv/bin/python", "/usr/local/bin/jupyter", "notebook", "--no-browser", "--ip=0.0.0.0"]
