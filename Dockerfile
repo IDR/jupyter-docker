@@ -18,6 +18,7 @@ RUN /home/omero/omeroenv/bin/omego install --ice 3.5 --no-start
 RUN /home/omero/omeroenv/bin/pip install markdown
 RUN /home/omero/omeroenv/bin/pip install -U matplotlib
 RUN /home/omero/omeroenv/bin/pip install pandas sklearn seaborn
+RUN /home/omero/omeroenv/bin/pip install joblib
 RUN echo 'export PYTHONPATH=$HOME/OMERO-CURRENT/lib/python' >> $HOME/.bashrc
 
 # Add a notebook profile.
