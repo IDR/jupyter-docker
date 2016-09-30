@@ -19,6 +19,15 @@ RUN /home/omero/omeroenv/bin/pip install markdown
 RUN /home/omero/omeroenv/bin/pip install -U matplotlib
 RUN /home/omero/omeroenv/bin/pip install pandas sklearn seaborn
 RUN /home/omero/omeroenv/bin/pip install joblib
+
+USER root
+RUN apt-get install -y libigraph0-dev
+RUN add-apt-repository ppa:igraph/ppa
+RUN apt-get update
+RUN apt-get install python-igraph
+
+USER omero
+RUN /home/omero/omeroenv/bin/pip install py2cytoscape
 RUN echo 'export PYTHONPATH=$HOME/OMERO-CURRENT/lib/python' >> $HOME/.bashrc
 
 # Add a notebook profile.
@@ -28,4 +37,9 @@ RUN mkdir -p -m 700 $HOME/.jupyter/ && \
 
 RUN mkdir -p /home/omero/.local/share/jupyter/kernels/python2/
 COPY kernel.json /home/omero/.local/share/jupyter/kernels/python2/kernel.json
+
+# RISE
+RUN git clone https://github.com/damianavila/RISE /tmp/RISE && \
+    cd /tmp/RISE && /home/omero/omeroenv/bin/python setup.py install
+
 CMD ["env", "PYTHONPATH=/home/omero/OMERO-CURRENT/lib/python", "/home/omero/omeroenv/bin/python", "/usr/local/bin/jupyter", "notebook", "--no-browser", "--ip=0.0.0.0"]
