@@ -47,7 +47,7 @@ RUN wget -q https://raw.githubusercontent.com/jupyterhub/jupyterhub/0.6.1/script
 ADD singleuser.sh /srv/singleuser/singleuser.sh
 
 COPY kernel.json /home/omero/.local/share/jupyter/kernels/python2/kernel.json
-RUN chown -R omero:omero /home/omero/.local
+RUN chown -R omero:omero /home/omero/.local /notebooks
 
 USER omero
 # Add a notebook profile.
