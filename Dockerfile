@@ -22,7 +22,7 @@ RUN pip2 install \
     seaborn
 
 WORKDIR /opt/omero
-RUN omego install --ice 3.5 --no-start && \
+RUN omego install --ice 3.5 --no-start -q && \
     echo /home/omero/OMERO-CURRENT/lib/python > \
     /usr/local/lib/python2.7/dist-packages/omero.pth
 
@@ -31,15 +31,6 @@ RUN apt-get install -y libigraph0-dev && \
     apt-get update && \
     apt-get install python-igraph
 RUN pip2 install py2cytoscape
-
-# Add a notebook profile.
-USER omero
-WORKDIR /notebooks
-RUN mkdir -p -m 700 $HOME/.jupyter/ && \
-    echo "c.NotebookApp.ip = '*'" >> $HOME/.jupyter/jupyter_notebook_config.py
-
-RUN mkdir -p /home/omero/.local/share/jupyter/kernels/python2/
-COPY kernel.json /home/omero/.local/share/jupyter/kernels/python2/kernel.json
 
 USER root
 
@@ -55,9 +46,17 @@ RUN wget -q https://raw.githubusercontent.com/jupyterhub/jupyterhub/0.6.1/script
     chmod 755 /usr/local/bin/jupyterhub-singleuser
 ADD singleuser.sh /srv/singleuser/singleuser.sh
 
+COPY kernel.json /home/omero/.local/share/jupyter/kernels/python2/kernel.json
+RUN chown -R omero:omero /home/omero/.local
+
 USER omero
+# Add a notebook profile.
+WORKDIR /notebooks
+RUN mkdir -p -m 700 /home/omero/.jupyter/ && \
+    echo "c.NotebookApp.ip = '*'" >> /home/omero/.jupyter/jupyter_notebook_config.py
+
 # smoke test that it's importable at least
-RUN sh /srv/singleuser/singleuser.sh -h
+RUN sh /srv/singleuser/singleuser.sh -h > /dev/null
 CMD ["sh", "/srv/singleuser/singleuser.sh"]
 
 CMD ["env", "PYTHONPATH=/home/omero/OMERO-CURRENT/lib/python", "/home/omero/omeroenv/bin/python", "/usr/local/bin/jupyter", "notebook", "--no-browser", "--ip=0.0.0.0"]
