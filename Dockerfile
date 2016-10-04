@@ -1,9 +1,7 @@
 FROM jupyter/notebook:latest
 MAINTAINER ome-devel@lists.openmicroscopy.org.uk
 
-RUN mkdir /omero-install
-WORKDIR /omero-install
-RUN git clone -b v5.2.5 --depth=1 git://github.com/ome/omero-install .
+RUN git clone -b v5.2.5 --depth=1 git://github.com/ome/omero-install /omero-install
 WORKDIR /omero-install/linux
 RUN \
 	bash -eux step01_ubuntu1404_init.sh && \
@@ -28,12 +26,11 @@ RUN omego install --ice 3.5 --no-start && \
     echo /home/omero/OMERO-CURRENT/lib/python > \
     /usr/local/lib/python2.7/dist-packages/omero.pth
 
-RUN apt-get install -y libigraph0-dev
-RUN add-apt-repository ppa:igraph/ppa
-RUN apt-get update
-RUN apt-get install python-igraph
+RUN apt-get install -y libigraph0-dev && \
+    add-apt-repository ppa:igraph/ppa && \
+    apt-get update && \
+    apt-get install python-igraph
 RUN pip2 install py2cytoscape
-RUN echo 'export PYTHONPATH=$HOME/OMERO-CURRENT/lib/python' >> $HOME/.bashrc
 
 # Add a notebook profile.
 USER omero
@@ -48,7 +45,8 @@ USER root
 
 # RISE
 RUN git clone https://github.com/damianavila/RISE /tmp/RISE && \
-    cd /tmp/RISE && /home/omero/omeroenv/bin/python setup.py install
+    cd /tmp/RISE && \
+    python setup.py install
 
 # Copied from jupyterhub/singleuser
 # https://github.com/jupyterhub/dockerspawner/blob/master/singleuser/Dockerfile
