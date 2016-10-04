@@ -1,4 +1,5 @@
 FROM jupyter/notebook:latest
+MAINTAINER ome-devel@lists.openmicroscopy.org.uk
 
 RUN mkdir /omero-install
 WORKDIR /omero-install
