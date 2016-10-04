@@ -23,7 +23,7 @@ RUN pip2 install \
 
 WORKDIR /opt/omero
 RUN omego install --ice 3.5 --no-start -q && \
-    echo /home/omero/OMERO-CURRENT/lib/python > \
+    echo /opt/omero/OMERO-CURRENT/lib/python > \
     /usr/local/lib/python2.7/dist-packages/omero.pth
 
 RUN apt-get install -y libigraph0-dev && \
