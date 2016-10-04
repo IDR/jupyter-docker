@@ -2,7 +2,7 @@ FROM jupyter/notebook:latest
 
 RUN mkdir /omero-install
 WORKDIR /omero-install
-RUN git clone git://github.com/ome/omero-install .
+RUN git clone -b v5.2.5 --depth=1 git://github.com/ome/omero-install .
 WORKDIR /omero-install/linux
 RUN \
 	bash -eux step01_ubuntu1404_init.sh && \
