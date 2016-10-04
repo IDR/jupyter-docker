@@ -58,5 +58,3 @@ RUN mkdir -p -m 700 /home/omero/.jupyter/ && \
 # smoke test that it's importable at least
 RUN sh /srv/singleuser/singleuser.sh -h > /dev/null
 CMD ["sh", "/srv/singleuser/singleuser.sh"]
-
-CMD ["env", "PYTHONPATH=/home/omero/OMERO-CURRENT/lib/python", "/home/omero/omeroenv/bin/python", "/usr/local/bin/jupyter", "notebook", "--no-browser", "--ip=0.0.0.0"]
