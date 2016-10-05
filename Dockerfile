@@ -1,8 +1,7 @@
 FROM jupyter/notebook:latest
+MAINTAINER ome-devel@lists.openmicroscopy.org.uk
 
-RUN mkdir /omero-install
-WORKDIR /omero-install
-RUN git clone git://github.com/ome/omero-install .
+RUN git clone -b v5.2.5 --depth=1 git://github.com/ome/omero-install /omero-install
 WORKDIR /omero-install/linux
 RUN \
 	bash -eux step01_ubuntu1404_init.sh && \
@@ -11,35 +10,51 @@ RUN \
 	bash -eux step01_ubuntu1404_ice_deps.sh && \
 	OMERO_DATA_DIR=/home/omero/data bash -eux step02_all_setup.sh
 
-USER omero
-WORKDIR /home/omero
-RUN virtualenv --system-site-packages /home/omero/omeroenv && /home/omero/omeroenv/bin/pip install omego
-RUN /home/omero/omeroenv/bin/omego install --ice 3.5 --no-start
-RUN /home/omero/omeroenv/bin/pip install markdown
-RUN /home/omero/omeroenv/bin/pip install -U matplotlib
-RUN /home/omero/omeroenv/bin/pip install pandas sklearn seaborn
-RUN /home/omero/omeroenv/bin/pip install joblib
+RUN apt-get install -y -q \
+    python-joblib \
+    python-markdown \
+    python-matplotlib \
+    python-pandas \
+    python-sklearn
+
+RUN pip2 install \
+    omego \
+    seaborn
+
+WORKDIR /opt/omero
+RUN omego install --ice 3.5 --no-start -q && \
+    echo /opt/omero/OMERO-CURRENT/lib/python > \
+    /usr/local/lib/python2.7/dist-packages/omero.pth
+
+RUN apt-get install -y libigraph0-dev && \
+    add-apt-repository ppa:igraph/ppa && \
+    apt-get update && \
+    apt-get install python-igraph
+RUN pip2 install py2cytoscape
 
 USER root
-RUN apt-get install -y libigraph0-dev
-RUN add-apt-repository ppa:igraph/ppa
-RUN apt-get update
-RUN apt-get install python-igraph
-
-USER omero
-RUN /home/omero/omeroenv/bin/pip install py2cytoscape
-RUN echo 'export PYTHONPATH=$HOME/OMERO-CURRENT/lib/python' >> $HOME/.bashrc
-
-# Add a notebook profile.
-WORKDIR /notebooks
-RUN mkdir -p -m 700 $HOME/.jupyter/ && \
-    echo "c.NotebookApp.ip = '*'" >> $HOME/.jupyter/jupyter_notebook_config.py
-
-RUN mkdir -p /home/omero/.local/share/jupyter/kernels/python2/
-COPY kernel.json /home/omero/.local/share/jupyter/kernels/python2/kernel.json
 
 # RISE
 RUN git clone https://github.com/damianavila/RISE /tmp/RISE && \
-    cd /tmp/RISE && /home/omero/omeroenv/bin/python setup.py install
+    cd /tmp/RISE && \
+    python setup.py install
 
-CMD ["env", "PYTHONPATH=/home/omero/OMERO-CURRENT/lib/python", "/home/omero/omeroenv/bin/python", "/usr/local/bin/jupyter", "notebook", "--no-browser", "--ip=0.0.0.0"]
+# Copied from jupyterhub/singleuser
+# https://github.com/jupyterhub/dockerspawner/blob/master/singleuser/Dockerfile
+RUN wget -q https://raw.githubusercontent.com/jupyterhub/jupyterhub/0.6.1/scripts/jupyterhub-singleuser \
+    -O /usr/local/bin/jupyterhub-singleuser && \
+    chmod 755 /usr/local/bin/jupyterhub-singleuser
+ADD singleuser.sh /srv/singleuser/singleuser.sh
+
+COPY kernel.json /home/omero/.local/share/jupyter/kernels/python2/kernel.json
+RUN chown -R omero:omero /home/omero/.local /notebooks
+
+USER omero
+# Add a notebook profile.
+WORKDIR /notebooks
+RUN mkdir -p -m 700 /home/omero/.jupyter/ && \
+    echo "c.NotebookApp.ip = '*'" >> /home/omero/.jupyter/jupyter_notebook_config.py
+
+# smoke test that it's importable at least
+RUN sh /srv/singleuser/singleuser.sh -h > /dev/null
+CMD ["sh", "/srv/singleuser/singleuser.sh"]
