@@ -18,6 +18,7 @@ RUN apt-get install -y -q \
     python-sklearn
 
 RUN pip2 install \
+    ipywidgets \
     omego \
     seaborn
 
