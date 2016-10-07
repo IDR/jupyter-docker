@@ -10,16 +10,15 @@ RUN \
 	bash -eux step01_ubuntu1404_ice_deps.sh && \
 	OMERO_DATA_DIR=/home/omero/data bash -eux step02_all_setup.sh
 
-RUN apt-get install -y -q \
-    python-joblib \
-    python-markdown \
-    python-matplotlib \
-    python-pandas \
-    python-sklearn
-
+# Ubuntu 14.04 distro packages are quite old so use pip instead
 RUN pip2 install \
     ipywidgets \
+    joblib \
+    markdown \
+    matplotlib \
     omego \
+    pandas \
+    sklearn \
     seaborn
 
 WORKDIR /opt/omero
@@ -30,8 +29,8 @@ RUN omego install --ice 3.5 --no-start -q && \
 RUN apt-get install -y libigraph0-dev && \
     add-apt-repository ppa:igraph/ppa && \
     apt-get update && \
-    apt-get install python-igraph
-RUN pip2 install py2cytoscape
+    apt-get install python-igraph && \
+    pip2 install py2cytoscape
 
 USER root
 
