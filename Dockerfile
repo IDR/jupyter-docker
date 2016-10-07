@@ -51,7 +51,16 @@ RUN chown -R omero:omero /home/omero/.local /notebooks
 
 RUN echo /notebooks/library > /usr/local/lib/python2.7/dist-packages/idr-notebooks.pth
 
+# Dodgy hacks to get cytoscape running headless
+RUN apt-get install -y xvfb screen
+
 USER omero
+WORKDIR /home/omero
+# WARNING: https isn't supported
+RUN wget -q http://chianti.ucsd.edu/cytoscape-3.4.0/Cytoscape_3_4_0_unix.sh && \
+    sh Cytoscape_3_4_0_unix.sh -q
+ADD cytoscape_headless.sh /home/omero/cytoscape_headless.sh
+
 # Add a notebook profile.
 WORKDIR /notebooks
 RUN mkdir -p -m 700 /home/omero/.jupyter/ && \
