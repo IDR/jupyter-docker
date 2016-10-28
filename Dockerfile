@@ -10,8 +10,11 @@ RUN \
 	bash -eux step01_ubuntu1404_ice_deps.sh && \
 	OMERO_DATA_DIR=/home/omero/data bash -eux step02_all_setup.sh
 
+RUN apt-get install -y nodejs
+
 # Ubuntu 14.04 distro packages are quite old so use pip instead
 RUN pip2 install \
+    bokeh \
     ipywidgets \
     joblib \
     markdown \
