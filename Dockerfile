@@ -19,6 +19,7 @@ RUN pip2 install omego && \
 RUN conda install --name python2 --quiet --yes \
     joblib \
     markdown \
+    pytables \
     python-igraph
 
 # RISE: "Live" Reveal.js Jupyter/IPython Slideshow Extension
