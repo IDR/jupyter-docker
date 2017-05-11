@@ -1,13 +1,32 @@
-FROM jupyter/scipy-notebook:latest
+FROM jupyter/datascience-notebook:latest
 MAINTAINER ome-devel@lists.openmicroscopy.org.uk
 
 USER root
+
+## Swap the name of NB_USER
+RUN usermod -l omero $NB_USER && \
+    ln -s /home/$NB_USER /home/omero && \
+    mkdir -p /home/omero/data && \
+    chown omero /home/omero/data && \
+    chmod a+X /home/omero
+ENV NB_USER omero
+# Note: this replaces "OMERO_DATA_DIR=/home/omero/data bash -eux step02_all_setup.sh"
+
 RUN apt-get update -y && \
     apt-get install -y nodejs
 
-RUN install -o jovyan -g users -d /notebooks /opt/omero
+## Install R tools
+RUN pip install notedown
+RUN conda config --add channels bioconda && \
+    conda install --quiet --yes \
+    'r-mclust' \
+    'r-ggdendro' \
+    'r-igraph' \
+    'r-pheatmap'
 
-USER jovyan
+RUN install -o omero -g users -d /notebooks /opt/omero
+
+USER omero
 
 RUN pip2 install omego && \
     cd /opt/omero && \
@@ -22,8 +41,9 @@ RUN conda install --name python2 --quiet --yes \
     pytables \
     python-igraph
 
-# RISE: "Live" Reveal.js Jupyter/IPython Slideshow Extension
+# TODO RISE: "Live" Reveal.js Jupyter/IPython Slideshow Extension
 # https://github.com/damianavila/RISE
+
 RUN conda install --name python2 --quiet --yes -c bioconda zeroc-ice && \
     conda install --name python2 --quiet --yes -c damianavila82 rise && \
     pip2 install py2cytoscape
