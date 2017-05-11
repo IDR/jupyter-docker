@@ -11,7 +11,7 @@ USER jovyan
 
 RUN pip2 install omego && \
     cd /opt/omero && \
-    /opt/conda/envs/python2/bin/omego download --ice 3.6 server --release 5.2 --sym OMERO.server && \
+    /opt/conda/envs/python2/bin/omego download --ice 3.6 server --release 5.3 --sym OMERO.server && \
     rm -f OMERO.server-*.zip && \
     echo /opt/omero/OMERO.server/lib/python > \
     /opt/conda/envs/python2/lib/python2.7/site-packages/omero.pth
