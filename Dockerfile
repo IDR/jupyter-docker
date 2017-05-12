@@ -24,21 +24,59 @@ RUN conda config --add channels bioconda && \
     'r-igraph' \
     'r-pheatmap'
 
-# romero dependencies mvn
-ARG MAVEN_VERSION=3.5.0
-ARG USER_HOME_DIR="/root"
-ARG SHA=beb91419245395bd69a4a6edad5ca3ec1a8b64e41457672dc687c173a495f034
-ARG BASE_URL=https://apache.osuosl.org/maven/maven-3/${MAVEN_VERSION}/binaries
 
-RUN mkdir -p /usr/share/maven /usr/share/maven/ref \
-  && curl -fsSL -o /tmp/apache-maven.tar.gz ${BASE_URL}/apache-maven-$MAVEN_VERSION-bin.tar.gz \
-  && echo "${SHA}  /tmp/apache-maven.tar.gz" | sha256sum -c - \
-  && tar -xzf /tmp/apache-maven.tar.gz -C /usr/share/maven --strip-components=1 \
-  && rm -f /tmp/apache-maven.tar.gz \
-  && ln -s /usr/share/maven/bin/mvn /usr/bin/mvn
+# FROM rOMERO-gateway/Dockerfile
+# ##############################
+# ##############################
 
-ENV MAVEN_HOME /usr/share/maven
-ENV MAVEN_CONFIG "$USER_HOME_DIR/.m2"
+# Dependencies necessary for install.R
+RUN echo "deb-src http://deb.debian.org/debian testing main" >> /etc/apt/sources.list
+RUN apt-get update && \
+    apt-get -y install libssl-dev libxml2-dev libcurl4-openssl-dev
+
+#########################################################################################
+## Necessary for running maven
+## copied from https://hub.docker.com/r/cardcorp/r-java/~/dockerfile/
+##
+## gnupg is needed to add new key
+RUN apt-get update && apt-get install -y gnupg2
+
+## Install Java 
+RUN echo "deb http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main" \
+      | tee /etc/apt/sources.list.d/webupd8team-java.list \
+    &&  echo "deb-src http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main" \
+      | tee -a /etc/apt/sources.list.d/webupd8team-java.list \
+    && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys EEA14886 \
+    && echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" \
+        | /usr/bin/debconf-set-selections \
+    && apt-get update \
+    && apt-get install -y oracle-java8-installer \
+    && update-alternatives --display java \
+    && echo "MAVEN IS NOT IN THE UPSTREAM LIST (JOSH)" \
+    && apt-get install -y maven \ 
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean \
+    && R CMD javareconf
+
+## make sure Java can be found in rApache and other daemons not looking in R ldpaths
+RUN echo "/usr/lib/jvm/java-8-oracle/jre/lib/amd64/server/" > /etc/ld.so.conf.d/rJava.conf
+RUN /sbin/ldconfig
+
+## Install rJava package
+RUN install2.r --error rJava \
+  && rm -rf /tmp/downloaded_packages/ /tmp/*.rds
+
+# Changed from rOMERO-gateway/Dockerfile
+RUN chown omero /usr/local/lib/R/site-library
+##
+##
+#########################################################################################
+
+
+# install romero
+RUN mkdir /romero \
+ && wget https://raw.githubusercontent.com/ome/rOMERO-gateway/master/install.R \
+ && Rscript install.R
 
 RUN install -o omero -g users -d /notebooks /opt/omero
 
