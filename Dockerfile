@@ -59,6 +59,7 @@ RUN echo "deb http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main" \
     && R CMD javareconf
 
 ## make sure Java can be found in rApache and other daemons not looking in R ldpaths
+ENV JAVA_HOME=/usr/lib/jvm/java-8-oracle
 RUN echo "/usr/lib/jvm/java-8-oracle/jre/lib/amd64/server/" > /etc/ld.so.conf.d/rJava.conf
 RUN /sbin/ldconfig
 
@@ -71,12 +72,9 @@ RUN /sbin/ldconfig
 ## Now install R and littler, and create a link for littler in /usr/local/bin
 ## Also set a default CRAN repo, and make sure littler knows about it too
 RUN apt-get update \
+        && echo "MIGRATE THIS BLOCK TO THE APT-GET ABOVE" \
 	&& apt-get install -y --no-install-recommends \
 		littler \
-                r-cran-littler \
-		r-base=${R_BASE_VERSION}* \
-		r-base-dev=${R_BASE_VERSION}* \
-		r-recommended=${R_BASE_VERSION}* \
         && echo 'options(repos = c(CRAN = "https://cran.rstudio.com/"), download.file.method = "libcurl")' >> /etc/R/Rprofile.site \
         && echo 'source("/etc/R/Rprofile.site")' >> /etc/littler.r \
 	&& ln -s /usr/share/doc/littler/examples/install.r /usr/local/bin/install.r \
@@ -88,8 +86,12 @@ RUN apt-get update \
 	&& rm -rf /var/lib/apt/lists/*
 
 ## Install rJava package
-RUN install2.r --error rJava \
-  && rm -rf /tmp/downloaded_packages/ /tmp/*.rds
+ENV PATH=$PATH:/usr/lib/jvm/java-8-oracle/bin
+RUN R CMD javareconf
+RUN apt-get update && apt-get install -y r-cran-rjava
+## TODO: move me to other environment variables
+## RUN install2.r --error rJava \
+##  && rm -rf /tmp/downloaded_packages/ /tmp/*.rds
 
 # Changed from rOMERO-gateway/Dockerfile
 RUN chown omero /usr/local/lib/R/site-library
