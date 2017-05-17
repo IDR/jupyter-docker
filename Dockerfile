@@ -31,6 +31,7 @@ RUN conda config --add channels bioconda && \
 
 # Dependencies necessary for install.R
 RUN echo "deb-src http://deb.debian.org/debian testing main" >> /etc/apt/sources.list
+RUN echo "deb http://ftp.debian.org/debian jessie-backports main" >> /etc/apt/sources.list
 RUN apt-get update && \
     apt-get -y install libssl-dev libxml2-dev libcurl4-openssl-dev
 
@@ -42,25 +43,20 @@ RUN apt-get update && \
 RUN apt-get update && apt-get install -y gnupg2
 
 ## Install Java 
-RUN echo "deb http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main" \
-      | tee /etc/apt/sources.list.d/webupd8team-java.list \
-    &&  echo "deb-src http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main" \
-      | tee -a /etc/apt/sources.list.d/webupd8team-java.list \
-    && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys EEA14886 \
-    && echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" \
-        | /usr/bin/debconf-set-selections \
-    && apt-get update \
-    && apt-get install -y oracle-java8-installer \
-    && update-alternatives --display java \
+RUN apt-get update \
+    && apt-get install -t jessie-backports -y openjdk-8-jdk \
     && echo "MAVEN IS NOT IN THE UPSTREAM LIST (JOSH)" \
     && apt-get install -y maven \ 
     && rm -rf /var/lib/apt/lists/* \
-    && apt-get clean \
-    && R CMD javareconf
+    && apt-get clean 
 
+ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+RUN rm -rf /usr/lib/jvm/java
+RUN ln -s  /usr/lib/jvm/java-8-openjdk-amd64 /usr/lib/jvm/java
+RUN R CMD javareconf
+    
 ## make sure Java can be found in rApache and other daemons not looking in R ldpaths
-ENV JAVA_HOME=/usr/lib/jvm/java-8-oracle
-RUN echo "/usr/lib/jvm/java-8-oracle/jre/lib/amd64/server/" > /etc/ld.so.conf.d/rJava.conf
+RUN echo "/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/server/" > /etc/ld.so.conf.d/rJava.conf
 RUN /sbin/ldconfig
 
 ###
@@ -86,9 +82,8 @@ RUN apt-get update \
 	&& rm -rf /var/lib/apt/lists/*
 
 ## Install rJava package
-ENV PATH=$PATH:/usr/lib/jvm/java-8-oracle/bin
-RUN R CMD javareconf
-RUN apt-get update && apt-get install -y r-cran-rjava
+ENV PATH=$PATH:/usr/lib/jvm/java-8-openjdk-amd64/bin
+RUN conda install --quiet --yes -c r r-rjava=0.9_8
 ## TODO: move me to other environment variables
 ## RUN install2.r --error rJava \
 ##  && rm -rf /tmp/downloaded_packages/ /tmp/*.rds
