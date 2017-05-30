@@ -124,6 +124,8 @@ RUN conda install --name python2 --quiet --yes -c bioconda zeroc-ice && \
     conda install --name python2 --quiet --yes -c damianavila82 rise && \
     pip2 install py2cytoscape
 
+RUN pip2 install -r /opt/omero/OMERO.server/share/web/requirements-py27.txt
+
 # Add idr-notebook library to path
 RUN echo /notebooks/library > /opt/conda/envs/python2/lib/python2.7/site-packages/idr-notebooks.pth
 
