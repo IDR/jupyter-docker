@@ -98,7 +98,7 @@ RUN chown omero /usr/local/lib/R/site-library
 # install romero
 RUN mkdir /romero \
  && wget https://raw.githubusercontent.com/ome/rOMERO-gateway/master/install.R \
- && Rscript install.R
+ && Rscript install.R --user=snoopycrimecop --branch=master/merge/daily
 
 RUN install -o omero -g users -d /notebooks /opt/omero
 
