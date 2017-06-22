@@ -5,7 +5,10 @@ USER root
 RUN apt-get update -y && \
     apt-get install -y nodejs
 
-RUN install -o jovyan -g users -d /notebooks /opt/omero
+RUN install -o jovyan -g users -d \
+    /notebooks \
+    /opt/omero \
+    /scratch
 
 USER jovyan
 
