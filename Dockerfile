@@ -9,7 +9,7 @@ RUN install -o jovyan -g users -d /notebooks /opt/omero
 
 USER jovyan
 
-RUN pip2 install omego && \
+RUN /opt/conda/bin/pip2 install omego && \
     cd /opt/omero && \
     /opt/conda/envs/python2/bin/omego download --ice 3.6 server --release 5.3 --sym OMERO.server && \
     rm -f OMERO.server-*.zip && \
@@ -27,7 +27,7 @@ RUN conda install --name python2 --quiet --yes \
 RUN conda install --name python2 --quiet --yes -c bioconda zeroc-ice && \
     conda install --name python2 --quiet --yes -c damianavila82 rise && \
     conda install --name python2 --quiet --yes -c pdrops pygraphviz -y && \
-    pip2 install py2cytoscape pydot graphviz tqdm gseapy
+    /opt/conda/bin/pip2 install py2cytoscape pydot graphviz tqdm gseapy
 
 # Add idr-notebook library to path
 RUN echo /notebooks/library > /opt/conda/envs/python2/lib/python2.7/site-packages/idr-notebooks.pth
