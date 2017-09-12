@@ -28,7 +28,11 @@ RUN conda install --name python2 --quiet --yes \
 RUN conda install --name python2 --quiet --yes -c bioconda zeroc-ice && \
     conda install --name python2 --quiet --yes -c damianavila82 rise && \
     conda install --name python2 --quiet --yes -c pdrops pygraphviz -y && \
-    /opt/conda/envs/python2/bin/pip install py2cytoscape pydot graphviz tqdm gseapy
+    /opt/conda/envs/python2/bin/pip install py2cytoscape 
+    /opt/conda/envs/python2/bin/pip install pydot 
+    /opt/conda/envs/python2/bin/pip graphviz 
+    /opt/conda/envs/python2/bin/pip tqdm 
+    /opt/conda/envs/python2/bin/pip gseapy
 
 # Add idr-notebook library to path
 RUN echo /notebooks/library > /opt/conda/envs/python2/lib/python2.7/site-packages/idr-notebooks.pth
