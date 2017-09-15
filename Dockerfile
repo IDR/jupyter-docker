@@ -21,18 +21,19 @@ RUN conda install --name python2 --quiet --yes \
     joblib \
     markdown \
     pytables \
-    python-igraph 
+    python-igraph
 
 # RISE: "Live" Reveal.js Jupyter/IPython Slideshow Extension
 # https://github.com/damianavila/RISE
 RUN conda install --name python2 --quiet --yes -c bioconda zeroc-ice && \
     conda install --name python2 --quiet --yes -c damianavila82 rise && \
-    conda install --name python2 --quiet --yes -c pdrops pygraphviz -y && \
-    /opt/conda/envs/python2/bin/pip install py2cytoscape 
-    /opt/conda/envs/python2/bin/pip install pydot 
-    /opt/conda/envs/python2/bin/pip graphviz 
-    /opt/conda/envs/python2/bin/pip tqdm 
-    /opt/conda/envs/python2/bin/pip gseapy
+    conda install --name python2 --quiet --yes -c pdrops pygraphviz && \
+    /opt/conda/envs/python2/bin/pip install \
+        graphviz \
+        gseapy \
+        py2cytoscape \
+        pydot \
+        tqdm
 
 # Add idr-notebook library to path
 RUN echo /notebooks/library > /opt/conda/envs/python2/lib/python2.7/site-packages/idr-notebooks.pth
