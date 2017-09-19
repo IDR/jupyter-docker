@@ -1,4 +1,4 @@
-FROM jupyter/scipy-notebook:latest
+FROM jupyter/scipy-notebook@sha256:4825556416ec7dcf4df73585a71595d29a274ef7d6d7c97267606661f3466952
 MAINTAINER ome-devel@lists.openmicroscopy.org.uk
 
 USER root
@@ -9,7 +9,8 @@ RUN install -o jovyan -g users -d /notebooks /opt/omero
 
 USER jovyan
 
-RUN pip2 install omego && \
+RUN conda create -n python2 python=2 --quiet --yes
+RUN /opt/conda/envs/python2/bin/pip install omego && \
     cd /opt/omero && \
     /opt/conda/envs/python2/bin/omego download --ice 3.6 server --release 5.3 --sym OMERO.server && \
     rm -f OMERO.server-*.zip && \
@@ -26,7 +27,13 @@ RUN conda install --name python2 --quiet --yes \
 # https://github.com/damianavila/RISE
 RUN conda install --name python2 --quiet --yes -c bioconda zeroc-ice && \
     conda install --name python2 --quiet --yes -c damianavila82 rise && \
-    pip2 install py2cytoscape
+    conda install --name python2 --quiet --yes -c pdrops pygraphviz && \
+    /opt/conda/envs/python2/bin/pip install \
+        graphviz \
+        gseapy \
+        py2cytoscape \
+        pydot \
+        tqdm
 
 # Add idr-notebook library to path
 RUN echo /notebooks/library > /opt/conda/envs/python2/lib/python2.7/site-packages/idr-notebooks.pth
@@ -40,8 +47,8 @@ RUN mkdir -p /home/jovyan/.local/share/jupyter/kernels/python2 && \
 #RUN usermod -l omero jovyan -m -d /home/omero
 #USER omero
 
-WORKDIR /notebooks
+# This will be updated and made read-only during startup
+RUN git clone https://github.com/IDR/idr-notebooks.git /notebooks
+ADD update-notebooks-and-start.sh /usr/local/bin/update-notebooks-and-start.sh
 
-# smoke test that it's importable at least
-RUN start-singleuser.sh -h > /dev/null
-CMD ["start-singleuser.sh"]
+CMD ["update-notebooks-and-start.sh"]
