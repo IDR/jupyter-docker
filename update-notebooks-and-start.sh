@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -ex
+set -x
 
 # Warning: scratch and shared volumes may be mounted under notebooks
 # and must remain writeable
