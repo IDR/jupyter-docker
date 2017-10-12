@@ -33,7 +33,8 @@ RUN conda install --name python2 --quiet --yes -c bioconda zeroc-ice && \
         gseapy \
         py2cytoscape \
         pydot \
-        tqdm
+        tqdm \
+        git+https://github.com/IDR/idr-py@master
 
 # Add idr-notebook library to path
 RUN echo /notebooks/library > /opt/conda/envs/python2/lib/python2.7/site-packages/idr-notebooks.pth
