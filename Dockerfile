@@ -53,9 +53,6 @@ RUN pip install git+https://github.com/manics/nbresuse.git@8cb4f5d8879c573a4fe69
     jupyter nbextension install --py --user nbresuse && \
     jupyter nbextension enable --py --user nbresuse
 
-# Add idr-notebook library to path
-RUN echo /notebooks/library > /opt/conda/envs/python2/lib/python2.7/site-packages/idr-notebooks.pth
-
 RUN mkdir -p /home/jovyan/.local/share/jupyter/kernels/python2 && \
     sed 's/Python 2/OMERO Python 2/' \
         /opt/conda/envs/python2/share/jupyter/kernels/python2/kernel.json > \
