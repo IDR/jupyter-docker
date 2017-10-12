@@ -33,10 +33,8 @@ RUN conda install --name python2 --quiet --yes -c bioconda zeroc-ice && \
         gseapy \
         py2cytoscape \
         pydot \
-        tqdm
-
-# Add idr-notebook library to path
-RUN echo /notebooks/library > /opt/conda/envs/python2/lib/python2.7/site-packages/idr-notebooks.pth
+        tqdm \
+        git+https://github.com/IDR/idr-py@develop
 
 RUN mkdir -p /home/jovyan/.local/share/jupyter/kernels/python2 && \
     sed 's/Python 2/OMERO Python 2/' \
