@@ -48,7 +48,7 @@ RUN conda install --name python2 --quiet --yes -c bioconda zeroc-ice && \
         git+https://github.com/IDR/idr-py@master
 
 # Display resource usage in notebooks https://github.com/yuvipanda/nbresuse
-RUN pip install git+https://github.com/manics/nbresuse.git@8cb4f5d8879c573a4fe690c4f53c2b0a99d18d69 && \
+RUN pip install https://github.com/IDR/nbresuse/archive/0.1.0-idr.zip && \
     jupyter serverextension enable --py nbresuse && \
     jupyter nbextension install --py --user nbresuse && \
     jupyter nbextension enable --py --user nbresuse
