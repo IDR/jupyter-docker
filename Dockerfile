@@ -44,7 +44,8 @@ RUN conda install --name python2 --quiet --yes -c bioconda zeroc-ice && \
         gseapy \
         py2cytoscape \
         pydot \
-        tqdm
+        tqdm \
+        git+https://github.com/IDR/idr-py@master
 
 # Display resource usage in notebooks https://github.com/yuvipanda/nbresuse
 RUN pip install git+https://github.com/manics/nbresuse.git@8cb4f5d8879c573a4fe690c4f53c2b0a99d18d69 && \
