@@ -17,11 +17,20 @@ RUN /opt/conda/envs/python2/bin/pip install omego && \
     echo /opt/omero/OMERO.server/lib/python > \
     /opt/conda/envs/python2/lib/python2.7/site-packages/omero.pth
 
+# scipy-notebook only includes python3 packages
 RUN conda install --name python2 --quiet --yes \
+    bokeh \
     joblib \
     markdown \
+    matplotlib \
+    pandas \
+    pillow \
     pytables \
-    python-igraph
+    python-igraph \
+    seaborn \
+    scikit-image \
+    scikit-learn \
+    scipy
 
 # RISE: "Live" Reveal.js Jupyter/IPython Slideshow Extension
 # https://github.com/damianavila/RISE
