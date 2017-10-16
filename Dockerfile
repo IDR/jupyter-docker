@@ -50,4 +50,5 @@ RUN mkdir -p /home/jovyan/.local/share/jupyter/kernels/python2 && \
 WORKDIR /notebooks
 RUN git clone https://github.com/IDR/idr-notebooks.git /notebooks
 
-CMD ["start-singleuser.sh"]
+# Autodetects jupyterhub and standalone modes
+CMD ["start-notebook.sh"]
