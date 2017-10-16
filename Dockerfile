@@ -47,8 +47,7 @@ RUN mkdir -p /home/jovyan/.local/share/jupyter/kernels/python2 && \
 #RUN usermod -l omero jovyan -m -d /home/omero
 #USER omero
 
-# This will be updated and made read-only during startup
+WORKDIR /notebooks
 RUN git clone https://github.com/IDR/idr-notebooks.git /notebooks
-ADD update-notebooks-and-start.sh /usr/local/bin/update-notebooks-and-start.sh
 
-CMD ["update-notebooks-and-start.sh"]
+CMD ["start-singleuser.sh"]
