@@ -26,6 +26,7 @@ RUN conda install --name python2 --quiet --yes \
     pandas \
     pillow \
     pytables \
+    pytest \
     python-igraph \
     seaborn \
     scikit-image \
