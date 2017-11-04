@@ -37,8 +37,9 @@ RUN conda install --name python2 --quiet --yes \
 
 # RISE: "Live" Reveal.js Jupyter/IPython Slideshow Extension
 # https://github.com/damianavila/RISE
+RUN conda install --quiet --yes -c damianavila82 rise
+
 RUN conda install --name python2 --quiet --yes -c bioconda zeroc-ice && \
-    conda install --name python2 --quiet --yes -c damianavila82 rise && \
     conda install --name python2 --quiet --yes -c pdrops pygraphviz && \
     /opt/conda/envs/python2/bin/pip install \
         graphviz \
