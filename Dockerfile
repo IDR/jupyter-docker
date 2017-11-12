@@ -27,6 +27,7 @@ RUN conda install --name python2 --quiet --yes \
 RUN conda install --name python2 --quiet --yes -c bioconda zeroc-ice && \
     conda install --name python2 --quiet --yes -c damianavila82 rise && \
     pip2 install py2cytoscape
+    pip2 install gseapy
 
 # Add idr-notebook library to path
 RUN echo /notebooks/library > /opt/conda/envs/python2/lib/python2.7/site-packages/idr-notebooks.pth
