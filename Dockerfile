@@ -25,6 +25,7 @@ RUN conda install --name python2 --quiet --yes \
     matplotlib \
     pandas \
     pillow \
+    psutil \
     pytables \
     pytest \
     python-igraph \
@@ -44,6 +45,12 @@ RUN conda install --name python2 --quiet --yes -c bioconda zeroc-ice && \
         py2cytoscape \
         pydot \
         tqdm
+
+# Display resource usage in notebooks https://github.com/yuvipanda/nbresuse
+RUN pip install git+https://github.com/manics/nbresuse.git@8cb4f5d8879c573a4fe690c4f53c2b0a99d18d69 && \
+    jupyter serverextension enable --py nbresuse && \
+    jupyter nbextension install --py --user nbresuse && \
+    jupyter nbextension enable --py --user nbresuse
 
 # Add idr-notebook library to path
 RUN echo /notebooks/library > /opt/conda/envs/python2/lib/python2.7/site-packages/idr-notebooks.pth
