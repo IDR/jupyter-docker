@@ -20,6 +20,7 @@ RUN /opt/conda/envs/python2/bin/pip install omego && \
 # scipy-notebook only includes python3 packages
 RUN conda install --name python2 --quiet --yes \
     bokeh \
+    ipywidgets \
     joblib \
     markdown \
     matplotlib \
@@ -29,10 +30,10 @@ RUN conda install --name python2 --quiet --yes \
     pytables \
     pytest \
     python-igraph \
-    seaborn \
     scikit-image \
     scikit-learn \
-    scipy
+    scipy \
+    seaborn
 
 # RISE: "Live" Reveal.js Jupyter/IPython Slideshow Extension
 # https://github.com/damianavila/RISE
