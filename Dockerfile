@@ -17,11 +17,21 @@ RUN /opt/conda/envs/python2/bin/pip install omego && \
     echo /opt/omero/OMERO.server/lib/python > \
     /opt/conda/envs/python2/lib/python2.7/site-packages/omero.pth
 
+# scipy-notebook only includes python3 packages
 RUN conda install --name python2 --quiet --yes \
+    bokeh \
     joblib \
     markdown \
+    matplotlib \
+    pandas \
+    pillow \
     pytables \
-    python-igraph
+    pytest \
+    python-igraph \
+    seaborn \
+    scikit-image \
+    scikit-learn \
+    scipy
 
 # RISE: "Live" Reveal.js Jupyter/IPython Slideshow Extension
 # https://github.com/damianavila/RISE
@@ -47,8 +57,8 @@ RUN mkdir -p /home/jovyan/.local/share/jupyter/kernels/python2 && \
 #RUN usermod -l omero jovyan -m -d /home/omero
 #USER omero
 
-# This will be updated and made read-only during startup
+WORKDIR /notebooks
 RUN git clone https://github.com/IDR/idr-notebooks.git /notebooks
-ADD update-notebooks-and-start.sh /usr/local/bin/update-notebooks-and-start.sh
 
-CMD ["update-notebooks-and-start.sh"]
+# Autodetects jupyterhub and standalone modes
+CMD ["start-notebook.sh"]
