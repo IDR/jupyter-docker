@@ -58,7 +58,7 @@ RUN mkdir -p /home/jovyan/.local/share/jupyter/kernels/python2 && \
 #USER omero
 
 WORKDIR /notebooks
-RUN git clone -b EMBLPredoc2017Notebooks --single-branch https://github.com/eleanorwilliams/idr-notebooks.git EMBLPredoc2017Notebooks /notebooks
+RUN git clone -b EMBLPredoc2017Notebooks --single-branch https://github.com/eleanorwilliams/idr-notebooks.git /notebooks
 
 # Autodetects jupyterhub and standalone modes
 CMD ["start-notebook.sh"]
