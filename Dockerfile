@@ -47,7 +47,8 @@ RUN conda install --name python2 --quiet --yes -c bioconda zeroc-ice && \
         py2cytoscape \
         pydot \
         tqdm \
-        idr-py==0.1
+        idr-py==0.1.1
+
 
 # Display resource usage in notebooks https://github.com/yuvipanda/nbresuse
 RUN pip install https://github.com/IDR/nbresuse/archive/0.1.0-idr.zip && \
