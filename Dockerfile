@@ -20,33 +20,40 @@ RUN /opt/conda/envs/python2/bin/pip install omego && \
 # scipy-notebook only includes python3 packages
 RUN conda install --name python2 --quiet --yes \
     bokeh \
+    ipywidgets \
     joblib \
     markdown \
     matplotlib \
     pandas \
     pillow \
+    psutil \
     pytables \
     pytest \
     python-igraph \
-    seaborn \
     scikit-image \
     scikit-learn \
-    scipy
+    scipy \
+    seaborn
 
 # RISE: "Live" Reveal.js Jupyter/IPython Slideshow Extension
 # https://github.com/damianavila/RISE
+RUN conda install --quiet --yes -c damianavila82 rise
+
 RUN conda install --name python2 --quiet --yes -c bioconda zeroc-ice && \
-    conda install --name python2 --quiet --yes -c damianavila82 rise && \
     conda install --name python2 --quiet --yes -c pdrops pygraphviz && \
     /opt/conda/envs/python2/bin/pip install \
         graphviz \
         gseapy \
         py2cytoscape \
         pydot \
-        tqdm
+        tqdm \
+        idr-py==0.1
 
-# Add idr-notebook library to path
-RUN echo /notebooks/library > /opt/conda/envs/python2/lib/python2.7/site-packages/idr-notebooks.pth
+# Display resource usage in notebooks https://github.com/yuvipanda/nbresuse
+RUN pip install https://github.com/IDR/nbresuse/archive/0.1.0-idr.zip && \
+    jupyter serverextension enable --py nbresuse && \
+    jupyter nbextension install --py --user nbresuse && \
+    jupyter nbextension enable --py --user nbresuse
 
 RUN mkdir -p /home/jovyan/.local/share/jupyter/kernels/python2 && \
     sed 's/Python 2/OMERO Python 2/' \
