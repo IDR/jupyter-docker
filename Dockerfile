@@ -1,16 +1,20 @@
 FROM jupyter/base-notebook
 MAINTAINER ome-devel@lists.openmicroscopy.org.uk
 
+# switch to root suer
 USER root
 RUN apt-get update -y && \
     apt-get install -y nodejs
 
 RUN install -o jovyan -g users -d /notebooks /opt/omero
 
+# switch user
 USER jovyan
 
+# create a python2 environment (for OMERO-PY compatibility)
 RUN conda create -n python2 python=2 --quiet --yes
 
+# install notebook dependencies within the python2 environment
 RUN conda install --name python2 --quiet --yes \
     bokeh \
     ipywidgets \
@@ -32,29 +36,19 @@ RUN conda install --name python2 --quiet --yes \
 # https://github.com/damianavila/RISE
 RUN conda install --quiet --yes -c damianavila82 rise
 
+# install zeroc-ice and python-omero
 RUN conda install --name python2 --quiet --yes -c bioconda zeroc-ice && \
-    conda install --name python2 --quiet --yes -c bioconda python-omero && \
-    conda install --name python2 --quiet --yes -c pdrops pygraphviz
-
-# Display resource usage in notebooks https://github.com/yuvipanda/nbresuse
-RUN /opt/conda/envs/python2/bin/pip install https://github.com/IDR/nbresuse/archive/0.1.0-idr.zip && \
-    /opt/conda/envs/python2/bin/jupyter serverextension enable --py nbresuse && \
-    /opt/conda/envs/python2/bin/jupyter nbextension install --py --user nbresuse && \
-    /opt/conda/envs/python2/bin/jupyter nbextension enable --py --user nbresuse
+    conda install --name python2 --quiet --yes -c bioconda python-omero
 
 RUN mkdir -p /home/jovyan/.local/share/jupyter/kernels/python2 && \
     sed 's/Python 2/OMERO Python 2/' \
         /opt/conda/envs/python2/share/jupyter/kernels/python2/kernel.json > \
         /home/jovyan/.local/share/jupyter/kernels/python2/kernel.json
 
-# Don't rename user- causes problems with earlier hardcoded paths
-#RUN usermod -l omero jovyan -m -d /home/omero
-#USER omero
-
-WORKDIR /notebooks
+# Install git and pull the notebooks from the training repository
 RUN conda install --name python2 --quiet --yes -c anaconda git
-RUN /opt/conda/envs/python2/bin/git clone https://github.com/IDR/idr-notebooks.git /notebooks
 
+# Switch to root user for installing Cell Profiler dependencies
 USER root
 
 # Install CellProfiler dependencies
@@ -91,6 +85,7 @@ RUN /opt/conda/envs/python2/bin/git checkout tags/v$version
 
 RUN /opt/conda/envs/python2/bin/pip install --editable .
 
+# R Installation (Staying as root user)
 RUN apt-get update -y && \
     apt-get install -y nodejs wget git
 
@@ -171,11 +166,19 @@ USER root
 
 # install romero
 ENV _JAVA_OPTIONS="-Xss2560k -Xmx2g"
-
 RUN /opt/conda/envs/python2/bin/conda install --quiet --yes -c anaconda gfortran_linux-64
 RUN mkdir /romero \
  && wget https://raw.githubusercontent.com/ome/rOMERO-gateway/master/install.R \
  && Rscript install.R --user=ome --branch=master
+
+# install r-kernel
+RUN /opt/conda/envs/python2/bin/conda install --quiet --yes -c r r-irkernel
+
+# switch user and working directory to /notebooks folder
+USER jovyan
+WORKDIR /notebooks
+# This needs to be changed to the training repository
+RUN /opt/conda/envs/python2/bin/git clone https://github.com/bramalingam/Jupyter_Training.git /notebooks
 
 # Autodetects jupyterhub and standalone modes
 CMD ["start-notebook.sh"]
