@@ -174,11 +174,15 @@ RUN mkdir /romero \
 # install r-kernel
 RUN /opt/conda/envs/python2/bin/conda install --quiet --yes -c r r-irkernel
 
+# install ipywidgets
+RUN /opt/conda/envs/python2/bin/conda install --quiet --yes -c conda-forge ipywidgets
+# This needs to be changed to the training repository
+# editing just to make sure the notebooks are pulled
+RUN /opt/conda/envs/python2/bin/git clone https://github.com/bramalingam/Jupyter_Training.git /notebooks
+
 # switch user and working directory to /notebooks folder
 USER jovyan
 WORKDIR /notebooks
-# This needs to be changed to the training repository
-RUN /opt/conda/envs/python2/bin/git clone https://github.com/bramalingam/Jupyter_Training.git /notebooks
 
 # Autodetects jupyterhub and standalone modes
 CMD ["start-notebook.sh"]
