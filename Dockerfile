@@ -38,7 +38,16 @@ RUN conda install --quiet --yes -c damianavila82 rise
 
 # install zeroc-ice and python-omero
 RUN conda install --name python2 --quiet --yes -c bioconda zeroc-ice && \
-    conda install --name python2 --quiet --yes -c bioconda python-omero
+    conda install --name python2 --quiet --yes -c bioconda python-omero=5.3.3
+
+# install idr-py and notebook dependencies
+RUN /opt/conda/envs/python2/bin/pip install \
+        graphviz \
+        gseapy \
+        py2cytoscape \
+        pydot \
+        tqdm \
+        idr-py==0.1.1
 
 RUN mkdir -p /home/jovyan/.local/share/jupyter/kernels/python2 && \
     sed 's/Python 2/OMERO Python 2/' \
@@ -179,10 +188,8 @@ RUN /opt/conda/envs/python2/bin/conda install --quiet --yes -c conda-forge ipywi
 
 # switch user and working directory to /notebooks folder
 USER jovyan
-# This needs to be changed to the training repository
-# editing just to make sure the notebooks are pulled
-RUN /opt/conda/envs/python2/bin/git clone https://github.com/bramalingam/Jupyter_Training.git /notebooks
 WORKDIR /notebooks
+RUN git clone https://github.com/IDR/idr-notebooks.git /notebooks
 
 # Autodetects jupyterhub and standalone modes
 CMD ["start-notebook.sh"]
