@@ -177,7 +177,7 @@ ENV _JAVA_OPTIONS="-Xss2560k -Xmx2g"
 RUN /opt/conda/envs/python2/bin/conda install --quiet --yes -c anaconda gfortran_linux-64
 RUN mkdir /romero \
  && wget https://raw.githubusercontent.com/ome/rOMERO-gateway/master/install.R \
- && Rscript install.R --user=dominikl --branch=load_wells
+ && Rscript install.R --user=dominikl --branch=update_dev_5_3
 # The above line uses a branch from Dominik's rOMERO-gateway repository (to make rOMERO work with IDR (OMERO_5_3)), 
 # this needs to be updated to OME/dev_5_3 when that branch is fixed
 
