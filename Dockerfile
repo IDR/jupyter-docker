@@ -48,6 +48,12 @@ RUN /opt/conda/envs/python2/bin/pip install \
         tqdm==4.19.5 \
         idr-py==0.1.1
 
+# Display resource usage in notebooks https://github.com/yuvipanda/nbresuse
+RUN pip install https://github.com/IDR/nbresuse/archive/0.1.0-idr.zip && \
+    jupyter serverextension enable --py nbresuse && \
+    jupyter nbextension install --py --user nbresuse && \
+    jupyter nbextension enable --py --user nbresuse
+
 RUN mkdir -p /home/jovyan/.local/share/jupyter/kernels/python2 && \
     sed 's/Python 2/OMERO Python 2/' \
         /opt/conda/envs/python2/share/jupyter/kernels/python2/kernel.json > \
