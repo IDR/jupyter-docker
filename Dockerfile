@@ -1,9 +1,10 @@
-FROM jupyter/base-notebook
+FROM jupyter/base-notebook:9089b66a9813
 MAINTAINER ome-devel@lists.openmicroscopy.org.uk
 
 USER root
 RUN apt-get update -y && \
-    apt-get install -y nodejs
+    apt-get install -y nodejs wget git && \
+    apt-get install -y build-essential
 
 RUN install -o jovyan -g users -d /notebooks /opt/omero
 
@@ -62,15 +63,13 @@ RUN mkdir -p /home/jovyan/.local/share/jupyter/kernels/python2 && \
 # Install git and pull the notebooks from the training repository
 RUN conda install --name python2 --quiet --yes -c anaconda git=2.15.0
 
-# Switch to root user for installing Cell Profiler dependencies
+# Switch to root user for installing R and Cell Profiler(in future) dependencies
 USER root
 
-# Install CellProfiler dependencies
+# # R Installation (Staying as root user)
 RUN   apt-get -y update &&                                          \
       apt-get -y install                                            \
-        build-essential    \
         cython             \
-        git                \
         libmysqlclient-dev \
         libhdf5-dev        \
         libxml2-dev        \
@@ -85,23 +84,6 @@ RUN   apt-get -y update &&                                          \
         python-numpy       \
         python-wxgtk3.0    \
         python-zmq
-
-WORKDIR /usr/local/src
-
-# Install CellProfiler
-RUN /opt/conda/envs/python2/bin/git clone https://github.com/CellProfiler/CellProfiler.git
-
-WORKDIR /usr/local/src/CellProfiler
-
-ARG version=3.0.0
-
-RUN /opt/conda/envs/python2/bin/git checkout tags/v$version
-
-RUN /opt/conda/envs/python2/bin/pip install --editable .
-
-# R Installation (Staying as root user)
-RUN apt-get update -y && \
-    apt-get install -y nodejs wget git
 
 ## Install R tools
 RUN /opt/conda/envs/python2/bin/conda config --add channels bioconda && \
@@ -175,8 +157,6 @@ RUN chown jovyan /usr/local/lib/R/site-library
 ##
 ##
 #########################################################################################
-
-USER root
 
 # install romero
 ENV _JAVA_OPTIONS="-Xss2560k -Xmx2g"
