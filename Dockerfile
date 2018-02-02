@@ -47,7 +47,7 @@ RUN /opt/conda/envs/python2/bin/pip install \
         py2cytoscape==0.6.2 \
         pydot==1.2.4 \
         tqdm==4.19.5 \
-        idr-py==0.1.1
+        idr-py==0.1.2
 
 # Display resource usage in notebooks https://github.com/yuvipanda/nbresuse
 RUN pip install https://github.com/IDR/nbresuse/archive/0.1.0-idr.zip && \
@@ -162,10 +162,8 @@ RUN chown jovyan /usr/local/lib/R/site-library
 ENV _JAVA_OPTIONS="-Xss2560k -Xmx2g"
 RUN /opt/conda/envs/python2/bin/conda install --quiet --yes -c anaconda gfortran_linux-64
 RUN mkdir /romero \
- && wget https://raw.githubusercontent.com/dominikl/rOMERO-gateway/update_dev_5_3/install.R \
- && Rscript install.R --user=dominikl --branch=update_dev_5_3
-# The above line uses a branch from Dominik's rOMERO-gateway repository (to make rOMERO work with IDR (OMERO_5_3)), 
-# this needs to be updated to OME/dev_5_3 when that branch is fixed
+ && wget https://raw.githubusercontent.com/ome/rOMERO-gateway/dev_5_3/install.R \
+ && Rscript install.R --user=ome --branch=dev_5_3
 
 # install r-kernel
 RUN /opt/conda/envs/python2/bin/conda install --quiet --yes -c r r-irkernel
@@ -175,9 +173,8 @@ RUN /opt/conda/envs/python2/bin/conda install --quiet --yes -c conda-forge ipywi
 
 # switch user and working directory to /notebooks folder
 USER jovyan
-RUN /opt/conda/envs/python2/bin/pip install --upgrade 'git+https://github.com/bramalingam/idr-py@Update_IDRPY'
 WORKDIR /notebooks
-RUN git clone -b Update_Notebooks https://git@github.com/bramalingam/idr-notebooks.git /notebooks
+RUN git clone -b master/merge/daily https://git@github.com/snoopycrimecop/idr-notebooks.git /notebooks
 
 # Autodetects jupyterhub and standalone modes
 CMD ["start-notebook.sh"]
