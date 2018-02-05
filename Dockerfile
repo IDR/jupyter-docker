@@ -1,4 +1,5 @@
-FROM jupyter/scipy-notebook@sha256:4825556416ec7dcf4df73585a71595d29a274ef7d6d7c97267606661f3466952
+FROM jupyter/scipy-notebook:7fd175ec22c7
+# (2017-11-14)
 MAINTAINER ome-devel@lists.openmicroscopy.org.uk
 
 USER root
