@@ -1,54 +1,53 @@
-FROM jupyter/scipy-notebook@sha256:4825556416ec7dcf4df73585a71595d29a274ef7d6d7c97267606661f3466952
+FROM jupyter/base-notebook:9089b66a9813
 MAINTAINER ome-devel@lists.openmicroscopy.org.uk
 
 USER root
 RUN apt-get update -y && \
-    apt-get install -y nodejs
+    apt-get install -y nodejs wget git && \
+    apt-get install -y build-essential
 
 RUN install -o jovyan -g users -d /notebooks /opt/omero
 
+# switch user
 USER jovyan
 
+# create a python2 environment (for OMERO-PY compatibility)
 RUN conda create -n python2 python=2 --quiet --yes
-RUN /opt/conda/envs/python2/bin/pip install omego && \
-    cd /opt/omero && \
-    /opt/conda/envs/python2/bin/omego download --ice 3.6 server --release 5.3 --sym OMERO.server && \
-    rm -f OMERO.server-*.zip && \
-    echo /opt/omero/OMERO.server/lib/python > \
-    /opt/conda/envs/python2/lib/python2.7/site-packages/omero.pth
 
-# scipy-notebook only includes python3 packages
+# install notebook dependencies within the python2 environment
 RUN conda install --name python2 --quiet --yes \
-    bokeh \
-    ipywidgets \
-    joblib \
-    markdown \
-    matplotlib \
-    pandas \
-    pillow \
-    psutil \
-    pytables \
-    pytest \
-    python-igraph \
-    scikit-image \
-    scikit-learn \
-    scipy \
-    seaborn
+    bokeh=0.12.11 \
+    ipywidgets=7.0.5 \
+    joblib=0.11 \
+    markdown=2.6.9 \
+    matplotlib=2.0.2 \
+    pandas=0.21.0 \
+    pillow=4.2.1 \
+    psutil=5.4.0 \
+    pytables=3.4.2 \
+    pytest=3.3.0 \
+    python-igraph=0.7.1.post6 \
+    scikit-image=0.13.0 \
+    scikit-learn=0.19.1 \
+    scipy=1.0.0 \
+    seaborn=0.8.1
 
 # RISE: "Live" Reveal.js Jupyter/IPython Slideshow Extension
 # https://github.com/damianavila/RISE
 RUN conda install --quiet --yes -c damianavila82 rise
 
+# install zeroc-ice and python-omero
 RUN conda install --name python2 --quiet --yes -c bioconda zeroc-ice && \
-    conda install --name python2 --quiet --yes -c pdrops pygraphviz && \
-    /opt/conda/envs/python2/bin/pip install \
-        graphviz \
-        gseapy \
-        py2cytoscape \
-        pydot \
-        tqdm \
-        idr-py==0.1.1
+    conda install --name python2 --quiet --yes -c bioconda python-omero=5.3.3
 
+# install idr-py and notebook dependencies
+RUN /opt/conda/envs/python2/bin/pip install \
+        graphviz==0.8.2 \
+        gseapy==0.9.2 \
+        py2cytoscape==0.6.2 \
+        pydot==1.2.4 \
+        tqdm==4.19.5 \
+        idr-py==0.1.2
 
 # Display resource usage in notebooks https://github.com/yuvipanda/nbresuse
 RUN pip install https://github.com/IDR/nbresuse/archive/0.1.0-idr.zip && \
@@ -61,12 +60,16 @@ RUN mkdir -p /home/jovyan/.local/share/jupyter/kernels/python2 && \
         /opt/conda/envs/python2/share/jupyter/kernels/python2/kernel.json > \
         /home/jovyan/.local/share/jupyter/kernels/python2/kernel.json
 
-# Don't rename user- causes problems with earlier hardcoded paths
-#RUN usermod -l omero jovyan -m -d /home/omero
-#USER omero
+# Install git and pull the notebooks from the training repository
+RUN conda install --name python2 --quiet --yes -c anaconda git=2.15.0
 
+# install ipywidgets
+RUN /opt/conda/envs/python2/bin/conda install --quiet --yes -c conda-forge ipywidgets
+
+# switch user and working directory to /notebooks folder
+USER jovyan
 WORKDIR /notebooks
-RUN git clone https://github.com/IDR/idr-notebooks.git /notebooks
+RUN git clone -b 0.6.0 https://github.com/IDR/idr-notebooks /notebooks
 
 # Autodetects jupyterhub and standalone modes
 CMD ["start-notebook.sh"]
