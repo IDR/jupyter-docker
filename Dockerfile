@@ -69,7 +69,7 @@ RUN /opt/conda/envs/python2/bin/conda install --quiet --yes -c conda-forge ipywi
 # switch user and working directory to /notebooks folder
 USER jovyan
 WORKDIR /notebooks
-RUN git clone -b master/merge/trigger https://git@github.com/snoopycrimecop/idr-notebooks.git /notebooks
+RUN git clone -b 0.6.0 https://github.com/IDR/idr-notebooks /notebooks
 
 # Autodetects jupyterhub and standalone modes
 CMD ["start-notebook.sh"]
