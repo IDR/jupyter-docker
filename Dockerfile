@@ -71,5 +71,9 @@ USER jovyan
 WORKDIR /notebooks
 RUN git clone -b 0.6.0 https://github.com/IDR/idr-notebooks /notebooks
 
+# Downgrade version of jupyterhub
+RUN pip uninstall -y jupyterhub
+RUN pip install jupyterhub==0.7.2
+
 # Autodetects jupyterhub and standalone modes
 CMD ["start-notebook.sh"]
