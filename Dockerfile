@@ -47,7 +47,7 @@ RUN /opt/conda/envs/python2/bin/pip install \
         py2cytoscape==0.6.2 \
         pydot==1.2.4 \
         tqdm==4.19.5 \
-        idr-py==0.1.2
+        idr-py==0.2.0
 
 # Display resource usage in notebooks https://github.com/yuvipanda/nbresuse
 RUN pip install https://github.com/IDR/nbresuse/archive/0.1.0-idr.zip && \
