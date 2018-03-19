@@ -21,6 +21,10 @@ RUN pip install https://github.com/IDR/nbresuse/archive/0.1.0-idr.zip && \
     jupyter nbextension install --py --user nbresuse && \
     jupyter nbextension enable --py --user nbresuse
 
+# Autoupdate notebooks https://github.com/data-8/nbgitpuller
+RUN pip install git+https://github.com/data-8/gitautosync && \
+    jupyter serverextension enable --py nbgitpuller
+
 # JupyterHub JupyterLab integration
 RUN jupyter labextension install @jupyterlab/hub-extension
 
