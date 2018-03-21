@@ -25,10 +25,8 @@ RUN pip install https://github.com/IDR/nbresuse/archive/0.1.0-idr.zip && \
 ADD environment-python2.yml .
 RUN conda env create -n python2 -f environment-python2.yml
 
-RUN mkdir -p /home/jovyan/.local/share/jupyter/kernels/python2 && \
-    sed 's/Python 2/OMERO Python 2/' \
-        /opt/conda/envs/python2/share/jupyter/kernels/python2/kernel.json > \
-        /home/jovyan/.local/share/jupyter/kernels/python2/kernel.json
+RUN /opt/conda/envs/python2/bin/python -m ipykernel install --user --name python2 --display-name 'OMERO Python 2'
+ADD logo-32x32.png logo-64x64.png .local/share/jupyter/kernels/python2/
 
 # switch user and working directory to /notebooks folder
 USER jovyan
