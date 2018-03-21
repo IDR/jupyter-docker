@@ -22,7 +22,6 @@ RUN pip install https://github.com/IDR/nbresuse/archive/0.1.0-idr.zip && \
     jupyter nbextension enable --py --user nbresuse
 
 # create a python2 environment (for OMERO-PY compatibility)
-#RUN conda env create -n python2 python=2 environment-python2.yml
 ADD environment-python2.yml .
 RUN conda env create -n python2 -f environment-python2.yml
 

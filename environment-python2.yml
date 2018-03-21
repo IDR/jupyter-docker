@@ -20,6 +20,7 @@ dependencies:
 - psutil=5.4.0=py27_0
 - pytables=3.4.2=py27_7
 - pytest=3.3.0=py27_0
+- python=2.7.14=2
 - python-graphviz=0.8.2=py27_0
 - python-igraph=0.7.1.post6=py27_4
 - scikit-image=0.13.0=py27_3
