@@ -21,6 +21,9 @@ RUN pip install https://github.com/IDR/nbresuse/archive/0.1.0-idr.zip && \
     jupyter nbextension install --py --user nbresuse && \
     jupyter nbextension enable --py --user nbresuse
 
+# JupyterHub JupyterLab integration
+RUN jupyter labextension install @jupyterlab/hub-extension
+
 # create a python2 environment (for OMERO-PY compatibility)
 ADD environment-python2.yml .
 RUN conda env create -n python2 -f environment-python2.yml
