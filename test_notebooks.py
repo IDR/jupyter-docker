@@ -3,15 +3,19 @@ import subprocess
 import pytest
 
 
+run = os.environ.get("TEST_RUN", "false").lower() == "true"
+timeout = int(os.environ.get("TEST_TIMOUT", 120))
+
+
 @pytest.mark.parametrize('notebook', [
     'README.ipynb',
-    pytest.mark.xfail(reason='Takes too long to run')(
+    pytest.mark.xfail(run=run, reason='Takes too long to run')(
         'notebooks/CalculateSharpness.ipynb'),
-    pytest.mark.xfail(reason='Requires R')(
+    pytest.mark.xfail(run=run, reason='Requires R')(
         'notebooks/CondensationBulkAnnotations.R.ipynb'),
-    pytest.mark.xfail(reason='Requires web')(
+    pytest.mark.xfail(run=run, reason='Requires web')(
         'notebooks/CreateOmeroFigures.ipynb'),
-    pytest.mark.xfail(reason=(
+    pytest.mark.xfail(run=run, reason=(
         'bokeh.charts replaced by bkcharts. '
         'bkcharts is unmaintained and broken '
         'https://stackoverflow.com/a/46287065'))(
@@ -20,14 +24,14 @@ import pytest
     'notebooks/GenesToPhenotypes.ipynb',
     'notebooks/Getting_Started.ipynb',
     'notebooks/IDR_API_example_script.ipynb',
-    pytest.mark.xfail(reason='Intermittent failures')(
+    pytest.mark.xfail(run=run, reason='Intermittent failures')(
         'notebooks/PCAanalysisOfCharmFeatures.ipynb'),
-    pytest.mark.xfail(reason='New notebook, not yet supported')(
+    pytest.mark.xfail(run=run, reason='New notebook, not yet supported')(
         'notebooks/QueryIDRWithGeneLists.ipynb'),
-    pytest.mark.xfail(reason='Intermittent failures')(
+    pytest.mark.xfail(run=run, reason='Intermittent failures')(
         'notebooks/RohnPhenotypeClustering.ipynb'),
     'notebooks/SysgroOverview.ipynb',
-    pytest.mark.xfail(reason='Broken')(
+    pytest.mark.xfail(run=run, reason='Broken')(
         'notebooks/SysgroRoiLength.ipynb'),
     'notebooks/Using_Jupyter.ipynb',
 ])
@@ -37,6 +41,6 @@ def test_notebook(notebook):
         'nbconvert',
         '--execute',
         '--stdout',
-        '--ExecutePreprocessor.timeout=120',
+        '--ExecutePreprocessor.timeout=%s' % timeout,
         os.path.join('/notebooks', notebook),
     ])
