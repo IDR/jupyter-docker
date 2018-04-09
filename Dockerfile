@@ -1,5 +1,5 @@
-# Tag updated 2018-03-28
-FROM jupyter/base-notebook:c88678a1c7c9
+FROM jupyter/base-notebook:8a1b90cbcba5
+# jupyter/base-notebook updated 2018-04-09
 MAINTAINER ome-devel@lists.openmicroscopy.org.uk
 
 USER root
@@ -27,13 +27,9 @@ RUN pip install git+https://github.com/data-8/gitautosync && \
 RUN jupyter labextension install @jupyterlab/hub-extension
 
 # create a python2 environment (for OMERO-PY compatibility)
-ADD environment-python2.yml .
-RUN conda env create -n python2 -f environment-python2.yml
-
-RUN /opt/conda/envs/python2/bin/python -m ipykernel install --user --name python2 --display-name 'OMERO Python 2'
-ADD logo-32x32.png logo-64x64.png .local/share/jupyter/kernels/python2/
-
-RUN git clone -b 0.6.0 https://github.com/IDR/idr-notebooks notebooks
+RUN mkdir .setup
+ADD environment-python2.yml .setup/
+RUN conda env create -n python2 -f .setup/environment-python2.yml
 
 # Autodetects jupyterhub and standalone modes
 CMD ["start-notebook.sh"]
