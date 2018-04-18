@@ -1,40 +1,35 @@
-FROM jupyter/base-notebook:9089b66a9813
+FROM jupyter/base-notebook:8a1b90cbcba5
+# jupyter/base-notebook updated 2018-04-09
 MAINTAINER ome-devel@lists.openmicroscopy.org.uk
 
 USER root
 RUN apt-get update -y && \
-    apt-get install -y nodejs wget git && \
-    apt-get install -y build-essential
+    apt-get install -y \
+        build-essential \
+        curl \
+        git
 
-RUN install -o jovyan -g users -d /notebooks /opt/omero
-
-# switch user
 USER jovyan
-
-# RISE: "Live" Reveal.js Jupyter/IPython Slideshow Extension
-# https://github.com/damianavila/RISE
-RUN conda install --quiet --yes -c damianavila82 rise
+# Default workdir: /home/jovyan
 
 # Display resource usage in notebooks https://github.com/yuvipanda/nbresuse
+# TODO: Consider removing, doesn't work with JupyterLab
 RUN pip install https://github.com/IDR/nbresuse/archive/0.1.0-idr.zip && \
     jupyter serverextension enable --py nbresuse && \
     jupyter nbextension install --py --user nbresuse && \
     jupyter nbextension enable --py --user nbresuse
 
+# Autoupdate notebooks https://github.com/data-8/nbgitpuller
+RUN pip install git+https://github.com/data-8/gitautosync && \
+    jupyter serverextension enable --py nbgitpuller
+
+# JupyterHub JupyterLab integration
+RUN jupyter labextension install @jupyterlab/hub-extension
+
 # create a python2 environment (for OMERO-PY compatibility)
-ADD environment-python2.yml .
-RUN conda env create -n python2 -f environment-python2.yml
-
-RUN /opt/conda/envs/python2/bin/python -m ipykernel install --user --name python2 --display-name 'OMERO Python 2'
-ADD logo-32x32.png logo-64x64.png .local/share/jupyter/kernels/python2/
-
-# switch user and working directory to /notebooks folder
-USER jovyan
-WORKDIR /notebooks
-RUN git clone -b 0.6.0 https://github.com/IDR/idr-notebooks /notebooks
-
-# Downgrade version of jupyterhub
-RUN pip install jupyterhub==0.7.2
+RUN mkdir .setup
+ADD environment-python2.yml .setup/
+RUN conda env create -n python2 -f .setup/environment-python2.yml
 
 # Autodetects jupyterhub and standalone modes
 CMD ["start-notebook.sh"]
