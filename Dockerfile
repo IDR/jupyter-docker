@@ -26,7 +26,9 @@ RUN pip install git+https://github.com/data-8/gitautosync && \
 # create a python2 environment (for OMERO-PY compatibility)
 RUN mkdir .setup
 ADD environment-python2.yml .setup/
-RUN conda env create -n python2 -f .setup/environment-python2.yml
+RUN conda env create -n python2 -f .setup/environment-python2.yml && \
+    # Jupyterlab component for ipywidgets (must match jupyterlab version) \
+    jupyter labextension install @jupyter-widgets/jupyterlab-manager@^0.35
 
 # Autodetects jupyterhub and standalone modes
 CMD ["start-notebook.sh"]
