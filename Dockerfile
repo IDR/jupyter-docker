@@ -12,13 +12,6 @@ RUN apt-get update -y && \
 USER jovyan
 # Default workdir: /home/jovyan
 
-# Display resource usage in notebooks https://github.com/yuvipanda/nbresuse
-# TODO: Consider removing, doesn't work with JupyterLab
-RUN pip install https://github.com/IDR/nbresuse/archive/0.1.0-idr.zip && \
-    jupyter serverextension enable --py nbresuse && \
-    jupyter nbextension install --py --user nbresuse && \
-    jupyter nbextension enable --py --user nbresuse
-
 # Autoupdate notebooks https://github.com/data-8/nbgitpuller
 RUN pip install git+https://github.com/data-8/gitautosync && \
     jupyter serverextension enable --py nbgitpuller
