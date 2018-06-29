@@ -1,6 +1,8 @@
-FROM jupyter/base-notebook:1dc1481636a2
-# jupyter/base-notebook updated 2018-04-27
+FROM jupyter/base-notebook:5811dcb711ba
+# jupyter/base-notebook updated 2018-06-23
 MAINTAINER ome-devel@lists.openmicroscopy.org.uk
+# TODO: Remove this when base-notebook is updated
+RUN pip install --no-cache "jupyterhub==0.9.*"
 
 USER root
 RUN apt-get update -y && \
