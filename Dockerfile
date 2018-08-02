@@ -1,5 +1,5 @@
-FROM jupyter/base-notebook:1dc1481636a2
-# jupyter/base-notebook updated 2018-04-27
+FROM jupyter/base-notebook:45e010d9e849
+# jupyter/base-notebook updated 2018-07-31
 MAINTAINER ome-devel@lists.openmicroscopy.org.uk
 
 USER root
