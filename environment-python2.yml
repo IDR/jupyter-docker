@@ -12,6 +12,6 @@ dependencies:
 - pillow=5.*
 - pytables=3.4.2=py27_7
 - pytest=3.3.0=py27_0
-- python=2.7.14=2
+- python=2.7.*
 - scikit-image=0.14.*
 - scipy=1.1.*
