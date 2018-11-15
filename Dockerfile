@@ -21,7 +21,7 @@ RUN mkdir .setup
 ADD environment-python2.yml .setup/
 RUN conda env create -n python2 -f .setup/environment-python2.yml && \
     # Jupyterlab component for ipywidgets (must match jupyterlab version) \
-    jupyter labextension install @jupyter-widgets/jupyterlab-manager@^0.36
+    jupyter labextension install @jupyter-widgets/jupyterlab-manager
 
 # Autodetects jupyterhub and standalone modes
 CMD ["start-notebook.sh"]
