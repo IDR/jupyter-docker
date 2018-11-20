@@ -7,11 +7,11 @@ dependencies:
 - zeroc-ice=3.6.3=py27_0
 # conda-forge
 - ipywidgets=7.0.5=py27_0
-- matplotlib=2.0.2=py27_2
+- matplotlib=2.2.*
 - pandas=0.21.0=py27_0
-- pillow=4.2.1=py27_0
+- pillow=5.*
 - pytables=3.4.2=py27_7
 - pytest=3.3.0=py27_0
-- python=2.7.14=2
-- scikit-image=0.13.0=py27_3
-- scipy=1.0.0=py27_blas_openblas_201
+- python=2.7.*
+- scikit-image=0.14.*
+- scipy=1.1.*
