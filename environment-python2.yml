@@ -6,9 +6,9 @@ dependencies:
 # bioconda
 - zeroc-ice=3.6.3=py27_0
 # conda-forge
-- ipywidgets=7.0.5=py27_0
+- ipywidgets=7.4.*
 - matplotlib=2.2.*
-- pandas=0.21.0=py27_0
+- pandas=0.23.*
 - pillow=5.*
 - pytables=3.4.2=py27_7
 - pytest=3.3.0=py27_0
