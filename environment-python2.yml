@@ -8,6 +8,7 @@ dependencies:
 # conda-forge
 - ipywidgets=7.4.*
 - matplotlib=2.2.*
+- nbval=0.9.*
 - pandas=0.23.*
 - pillow=5.*
 - pytables=3.4.*
