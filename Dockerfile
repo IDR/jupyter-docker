@@ -1,5 +1,5 @@
-FROM jupyter/base-notebook:5b2160dfd919
-# jupyter/base-notebook updated 2018-11-16
+FROM jupyter/base-notebook:87210526f381
+# jupyter/base-notebook updated 2010-01-08
 MAINTAINER ome-devel@lists.openmicroscopy.org.uk
 
 USER root
@@ -13,8 +13,10 @@ USER jovyan
 # Default workdir: /home/jovyan
 
 # Autoupdate notebooks https://github.com/data-8/nbgitpuller
+# nbval for testing reproducibility
 RUN pip install git+https://github.com/data-8/gitautosync && \
-    jupyter serverextension enable --py nbgitpuller
+    jupyter serverextension enable --py nbgitpuller && \
+    conda install -y -q nbval
 
 # create a python2 environment (for OMERO-PY compatibility)
 RUN mkdir .setup
