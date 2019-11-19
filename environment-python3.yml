@@ -1,10 +1,9 @@
 name: python3
 channels:
-- bioconda
 - conda-forge
 - ome
 dependencies:
-# bioconda
+# ome
 - zeroc-ice36-python
 # conda-forge
 - ipywidgets=7.4.*
