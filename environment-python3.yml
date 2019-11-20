@@ -1,6 +1,5 @@
 name: python3
 channels:
-- conda-forge
 - ome
 dependencies:
 # ome
