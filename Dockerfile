@@ -1,5 +1,4 @@
-FROM jupyter/base-notebook:87210526f381
-# jupyter/base-notebook updated 2010-01-08
+FROM jupyter/base-notebook:213760e5674e
 MAINTAINER ome-devel@lists.openmicroscopy.org.uk
 
 USER root
@@ -23,7 +22,7 @@ RUN mkdir .setup
 ADD environment-python3.yml .setup/
 RUN conda env create -n python3 -f .setup/environment-python3.yml && \
     # Jupyterlab component for ipywidgets (must match jupyterlab version) \
-    jupyter labextension install @jupyter-widgets/jupyterlab-manager@0.38
+    jupyter labextension install @jupyter-widgets/jupyterlab-manager@1.0
 
 # Autodetects jupyterhub and standalone modes
 CMD ["start-notebook.sh"]
