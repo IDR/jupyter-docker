@@ -1,5 +1,4 @@
-FROM jupyter/base-notebook:87210526f381
-# jupyter/base-notebook updated 2010-01-08
+FROM jupyter/base-notebook:213760e5674e
 MAINTAINER ome-devel@lists.openmicroscopy.org.uk
 
 USER root
@@ -18,12 +17,12 @@ RUN pip install git+https://github.com/data-8/gitautosync && \
     jupyter serverextension enable --py nbgitpuller && \
     conda install -y -q nbval
 
-# create a python2 environment (for OMERO-PY compatibility)
+# create a python3 environment (for OMERO-PY compatibility)
 RUN mkdir .setup
-ADD environment-python2.yml .setup/
-RUN conda env create -n python2 -f .setup/environment-python2.yml && \
+ADD environment-python3.yml .setup/
+RUN conda env create -n python3 -f .setup/environment-python3.yml && \
     # Jupyterlab component for ipywidgets (must match jupyterlab version) \
-    jupyter labextension install @jupyter-widgets/jupyterlab-manager@0.38
+    jupyter labextension install @jupyter-widgets/jupyterlab-manager@1.0
 
 # Autodetects jupyterhub and standalone modes
 CMD ["start-notebook.sh"]

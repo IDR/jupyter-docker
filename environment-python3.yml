@@ -1,0 +1,16 @@
+name: python3
+channels:
+- ome
+dependencies:
+# ome
+- zeroc-ice36-python
+# conda-forge
+- ipywidgets=7.4.*
+- matplotlib=3.1.*
+- pandas=0.25.*
+- pillow=6.*
+- pytables=3.4.*
+- pytest=5.2.*
+- python=3.6.*
+- scikit-image=0.16.*
+- scipy=1.3.*
